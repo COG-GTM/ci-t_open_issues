@@ -9,6 +9,7 @@ import com.google.appengine.api.users.User;
 import com.ciandt.techgallery.persistence.dao.StorageDAO;
 import com.ciandt.techgallery.persistence.dao.TechnologyDAO;
 import com.ciandt.techgallery.persistence.dao.impl.TechnologyDAOImpl;
+import com.googlecode.objectify.Ref;
 import com.ciandt.techgallery.persistence.dao.storage.StorageDAOImpl;
 import com.ciandt.techgallery.persistence.model.TechGalleryUser;
 import com.ciandt.techgallery.persistence.model.Technology;
@@ -88,6 +89,15 @@ public class TechnologyServiceImpl implements TechnologyService {
       imageLink =
           storageDAO.insertImage(convertNameToId(technology.getName()), new ByteArrayInputStream(
               DatatypeConverter.parseBase64Binary(technology.getImageContent())));
+    }
+
+    if (technology.getParentTechnology() != null) {
+      String parentId = technology.getParentTechnology().getKey().getName();
+      Technology parentTech = technologyDAO.findByName(parentId);
+      if (parentTech == null) {
+        throw new BadRequestException("Parent technology not found: " + parentId);
+      }
+      technology.setParentTechnology(Ref.create(parentTech));
     }
 
     fillTechnology(technology, user, imageLink, isUpdate);
@@ -453,5 +463,43 @@ public class TechnologyServiceImpl implements TechnologyService {
     technology.setLastActivityUser(user.getEmail());
     technologyDAO.update(technology);
     return technology;
+  }
+
+  @Override
+  public List<Technology> getChildTechnologies(String parentTechnologyId, User user)
+      throws NotFoundException, BadRequestException, InternalServerErrorException {
+    validateUser(user);
+    Technology parentTech = getTechnologyById(parentTechnologyId, user);
+    if (parentTech == null) {
+      throw new NotFoundException(ValidationMessageEnums.TECHNOLOGY_NOT_EXIST.message());
+    }
+    
+    List<Technology> allTechnologies = technologyDAO.findAllActives();
+    List<Technology> childTechnologies = new ArrayList<>();
+    
+    for (Technology tech : allTechnologies) {
+      if (tech.getParentTechnology() != null && 
+          tech.getParentTechnology().getKey().getName().equals(parentTechnologyId)) {
+        childTechnologies.add(tech);
+      }
+    }
+    
+    return childTechnologies;
+  }
+
+  @Override
+  public List<Technology> getParentTechnologies(User user)
+      throws NotFoundException, BadRequestException, InternalServerErrorException {
+    validateUser(user);
+    List<Technology> allTechnologies = technologyDAO.findAllActives();
+    List<Technology> parentTechnologies = new ArrayList<>();
+    
+    for (Technology tech : allTechnologies) {
+      if (tech.getParentTechnology() == null) {
+        parentTechnologies.add(tech);
+      }
+    }
+    
+    return parentTechnologies;
   }
 }

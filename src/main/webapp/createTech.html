@@ -108,6 +108,14 @@
 	          			placeholder="<Web Site>" aria-describedby="basic-addon2">
 	      	  	</div>
 	        </div>
+	        <div class="spacingtop row">
+	        	<div class="col-md-9">
+	        		<select ng-model="selectedParentTechnology" class="form-control">
+	        			<option value="">Selecione uma tecnologia pai (opcional)...</option>
+	        			<option ng-repeat="parent in parentTechnologies" value="{{parent.id}}">{{parent.name}}</option>
+	        		</select>
+	      	  	</div>
+	        </div>
 			<div class="spacingtop">
 				<button id="btn_clear" type="button" class="btn btn-primary" ng-click="clearTechnology()" ng-disabled="id != null">Limpar</button>
 				<button id="btn_save" type="submit" class="btn btn-primary" ng-click="addOrUpdateTechnology()">Salvar</button>

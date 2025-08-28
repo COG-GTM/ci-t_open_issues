@@ -160,4 +160,35 @@ public class TechnologyEndpoint {
     return service.deleteTechnology(technologyId, user);
   }
 
+  /**
+   * Endpoint for getting child technologies of a parent technology.
+   *
+   * @param parentTechnologyId parent technology id.
+   * @param user User
+   * @return list of child technologies
+   * @throws NotFoundException in case the information are not founded
+   * @throws BadRequestException in case a request with problem were made.
+   * @throws InternalServerErrorException in case something goes wrong
+   */
+  @ApiMethod(name = "getChildTechnologies", path = "technology/{parentTechnologyId}/children", httpMethod = "get")
+  public List<Technology> getChildTechnologies(@Named("parentTechnologyId") String parentTechnologyId, User user)
+      throws NotFoundException, BadRequestException, InternalServerErrorException {
+    return service.getChildTechnologies(parentTechnologyId, user);
+  }
+
+  /**
+   * Endpoint for getting all parent technologies (technologies without a parent).
+   *
+   * @param user User
+   * @return list of parent technologies
+   * @throws NotFoundException in case the information are not founded
+   * @throws BadRequestException in case a request with problem were made.
+   * @throws InternalServerErrorException in case something goes wrong
+   */
+  @ApiMethod(name = "getParentTechnologies", path = "technology/parents", httpMethod = "get")
+  public List<Technology> getParentTechnologies(User user)
+      throws NotFoundException, BadRequestException, InternalServerErrorException {
+    return service.getParentTechnologies(user);
+  }
+
 }

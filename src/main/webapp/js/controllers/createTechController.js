@@ -7,6 +7,8 @@ angular.module('techGallery').controller(
     
     $scope.idTechnology = jsUtils.getParameterByName('id');
     $scope.showTechNotExists = false;
+    $scope.parentTechnologies = [];
+    $scope.selectedParentTechnology = null;
     
     $scope.logoutRedirect = function(){
       return jsUtils.logoutRedirect();
@@ -97,6 +99,10 @@ angular.module('techGallery').controller(
             $scope.dropDownRecommendation = data.items;
             $scope.$apply();
           });
+        gapi.client.rest.getParentTechnologies().execute(function(data){
+            $scope.parentTechnologies = data.items || [];
+            $scope.$apply();
+          });
         document.getElementById('idimage').addEventListener('change', handleFileSelect, false);
     	$scope.$apply();
     }
@@ -118,6 +124,10 @@ angular.module('techGallery').controller(
 
     $scope.selectRecommendation = function(selected){
         $scope.selectedRecommendation = selected;
+    };
+    
+    $scope.selectParentTechnology = function(selected){
+        $scope.selectedParentTechnology = selected;
     };
     
     function handleFileSelect(evt) {
@@ -164,6 +174,7 @@ angular.module('techGallery').controller(
     	$scope.description = '';
     	$scope.shortDescription = '';
     	$scope.webSite = '';
+    	$scope.selectedParentTechnology = null;
     	document.getElementById('idimage').value = null;
     	document.getElementById('list').innerHTML = ['<img src="/images/no_image.png" title="Insira uma imagem" width="200" />'].join('');
     }
@@ -179,7 +190,8 @@ angular.module('techGallery').controller(
 	    			recommendation : $scope.selectedRecommendation,
 	    			description : $scope.description,
 	    			website : $scope.webSite,
-	    			image : $scope.image
+	    			image : $scope.image,
+	    			parentTechnology : $scope.selectedParentTechnology
     			};
     		}else{
     			var req = {
@@ -190,7 +202,8 @@ angular.module('techGallery').controller(
 					recommendation : $scope.selectedRecommendation,
 					description : $scope.description,
 					website : $scope.webSite,
-					imageContent : $scope.image
+					imageContent : $scope.image,
+					parentTechnology : $scope.selectedParentTechnology
     			};
     		}
 	        gapi.client.rest.addOrUpdateTechnology(req).execute(function(data){
