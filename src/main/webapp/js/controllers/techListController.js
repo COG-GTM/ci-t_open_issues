@@ -180,5 +180,14 @@ angular.module('techGallery').controller(
     $scope.editTechnology = function(technologyId){
     	window.location = $scope.redirectUrl(technologyId, '/createTech.html');
     }
+    
+    $scope.getChildTechnologies = function(parentTechnologyId) {
+      gapi.client.rest.getChildTechnologies({parentTechnologyId: parentTechnologyId}).execute(function(data) {
+        if (data.items) {
+          return data.items;
+        }
+        return [];
+      });
+    };
   }
 );

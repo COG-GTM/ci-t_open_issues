@@ -110,4 +110,10 @@ public interface TechnologyService {
   Technology deleteTechnology(final String technologyId, User user)
       throws InternalServerErrorException, BadRequestException, NotFoundException,
       OAuthRequestException;
+
+  List<Technology> getChildTechnologies(String parentTechnologyId, User user)
+      throws NotFoundException, BadRequestException, InternalServerErrorException;
+
+  List<Technology> getParentTechnologies(User user)
+      throws NotFoundException, BadRequestException, InternalServerErrorException;
 }
