@@ -110,4 +110,52 @@ public interface TechnologyService {
   Technology deleteTechnology(final String technologyId, User user)
       throws InternalServerErrorException, BadRequestException, NotFoundException,
       OAuthRequestException;
+
+  /**
+   * Get full technology hierarchy starting from root.
+   *
+   * @param rootId the root technology ID.
+   * @param user the authenticated user.
+   * @return Response containing the technology hierarchy.
+   * @throws NotFoundException in case the information are not founded
+   * @throws BadRequestException in case a request with problem were made.
+   * @throws InternalServerErrorException in case something goes wrong
+   */
+  Response getTechnologyHierarchy(String rootId, User user)
+      throws NotFoundException, BadRequestException, InternalServerErrorException;
+
+  /**
+   * Get direct child technologies.
+   *
+   * @param parentId the parent technology ID.
+   * @param user the authenticated user.
+   * @return list of child technologies.
+   * @throws NotFoundException in case the information are not founded
+   * @throws BadRequestException in case a request with problem were made.
+   * @throws InternalServerErrorException in case something goes wrong
+   */
+  List<Technology> getChildTechnologies(String parentId, User user)
+      throws NotFoundException, BadRequestException, InternalServerErrorException;
+
+  /**
+   * Set parent-child relationship between technologies.
+   *
+   * @param childId the child technology ID.
+   * @param parentId the parent technology ID.
+   * @param user the authenticated user.
+   * @return the updated child technology.
+   * @throws NotFoundException in case the information are not founded
+   * @throws BadRequestException in case a request with problem were made.
+   * @throws InternalServerErrorException in case something goes wrong
+   */
+  Technology setParentTechnology(String childId, String parentId, User user)
+      throws NotFoundException, BadRequestException, InternalServerErrorException;
+
+  /**
+   * Validate technology hierarchy to prevent circular references.
+   *
+   * @param tech the technology to validate.
+   * @throws BadRequestException if circular reference is detected.
+   */
+  void validateHierarchy(Technology tech) throws BadRequestException;
 }

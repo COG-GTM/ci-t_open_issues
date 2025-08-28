@@ -1,6 +1,7 @@
 package com.ciandt.techgallery.service.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Response with a technology entity.
@@ -42,6 +43,15 @@ public class TechnologyTO implements Response {
   private boolean followedByUser;
 
   private Date lastActivity;
+
+  /** Parent technology ID for hierarchy. */
+  private String parentTechnologyId;
+  /** Child technologies list. */
+  private List<TechnologyTO> childTechnologies;
+  /** Hierarchy level (0 for root). */
+  private Integer hierarchyLevel;
+  /** Hierarchy path from root. */
+  private String hierarchyPath;
 
   public String getId() {
     return id;
@@ -169,5 +179,37 @@ public class TechnologyTO implements Response {
 
   public void setRecommendationJustification(String recommendationJustification) {
     this.recommendationJustification = recommendationJustification;
+  }
+
+  public String getParentTechnologyId() {
+    return parentTechnologyId;
+  }
+
+  public void setParentTechnologyId(String parentTechnologyId) {
+    this.parentTechnologyId = parentTechnologyId;
+  }
+
+  public List<TechnologyTO> getChildTechnologies() {
+    return childTechnologies;
+  }
+
+  public void setChildTechnologies(List<TechnologyTO> childTechnologies) {
+    this.childTechnologies = childTechnologies;
+  }
+
+  public Integer getHierarchyLevel() {
+    return hierarchyLevel;
+  }
+
+  public void setHierarchyLevel(Integer hierarchyLevel) {
+    this.hierarchyLevel = hierarchyLevel;
+  }
+
+  public String getHierarchyPath() {
+    return hierarchyPath;
+  }
+
+  public void setHierarchyPath(String hierarchyPath) {
+    this.hierarchyPath = hierarchyPath;
   }
 }

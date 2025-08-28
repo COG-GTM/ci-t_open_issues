@@ -33,4 +33,29 @@ public interface TechnologyDAO extends GenericDAO<Technology, String> {
    * @return the technology if is active.
    */
   public Technology findByIdActive(String id);
+
+  /**
+   * Method to find child technologies by parent ID.
+   *
+   * @param parentId the parent technology ID.
+   *
+   * @return list of child technologies.
+   */
+  public List<Technology> findChildrenByParentId(String parentId);
+
+  /**
+   * Method to find root technologies (no parent).
+   *
+   * @return list of root technologies.
+   */
+  public List<Technology> findRootTechnologies();
+
+  /**
+   * Method to find technology hierarchy path from root to technology.
+   *
+   * @param techId the technology ID.
+   *
+   * @return list of technologies in hierarchy path.
+   */
+  public List<Technology> findTechnologyPath(String techId);
 }

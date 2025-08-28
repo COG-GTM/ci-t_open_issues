@@ -7,6 +7,7 @@ import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Unindex;
+import com.googlecode.objectify.Ref;
 
 import com.ciandt.techgallery.service.enums.TechnologyOrderOptionEnum;
 import com.ciandt.techgallery.service.transformer.TechnologyTransformer;
@@ -45,6 +46,7 @@ public class Technology extends BaseEntity<String> {
   public static final String LAST_ACTIVITY = "lastActivity";
   public static final String UPDATE_USER = "updateUser";
   public static final String ACTIVE = "active";
+  public static final String PARENT_TECHNOLOGY = "parentTechnology";
 
   /*
    * Attributes --------------------------------------------
@@ -103,6 +105,12 @@ public class Technology extends BaseEntity<String> {
 
   @Index
   private Boolean active;
+
+  @Index
+  private Ref<Technology> parentTechnology;
+
+  @Ignore
+  private List<Technology> childTechnologies;
 
   @Ignore
   private String imageContent;
@@ -266,6 +274,22 @@ public class Technology extends BaseEntity<String> {
 
   public void setLastActivityUser(String lastActivityUser) {
     this.lastActivityUser = lastActivityUser;
+  }
+
+  public Ref<Technology> getParentTechnology() {
+    return parentTechnology;
+  }
+
+  public void setParentTechnology(Ref<Technology> parentTechnology) {
+    this.parentTechnology = parentTechnology;
+  }
+
+  public List<Technology> getChildTechnologies() {
+    return childTechnologies;
+  }
+
+  public void setChildTechnologies(List<Technology> childTechnologies) {
+    this.childTechnologies = childTechnologies;
   }
 
   /*

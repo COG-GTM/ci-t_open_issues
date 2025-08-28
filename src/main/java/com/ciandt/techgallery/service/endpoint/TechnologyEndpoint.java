@@ -160,4 +160,66 @@ public class TechnologyEndpoint {
     return service.deleteTechnology(technologyId, user);
   }
 
+  /**
+   * Endpoint for getting technology hierarchy.
+   *
+   * @param rootId the root technology ID.
+   * @return technology hierarchy
+   * @throws InternalServerErrorException in case something goes wrong
+   * @throws NotFoundException in case the information are not founded
+   * @throws BadRequestException in case a request with problem were made.
+   */
+  @ApiMethod(name = "getTechnologyHierarchy", path = "technology/{rootId}/hierarchy", httpMethod = "get")
+  public Response getTechnologyHierarchy(@Named("rootId") String rootId, User user)
+      throws InternalServerErrorException, NotFoundException, BadRequestException {
+    return service.getTechnologyHierarchy(rootId, user);
+  }
+
+  /**
+   * Endpoint for getting child technologies.
+   *
+   * @param parentId the parent technology ID.
+   * @return list of child technologies
+   * @throws InternalServerErrorException in case something goes wrong
+   * @throws NotFoundException in case the information are not founded
+   * @throws BadRequestException in case a request with problem were made.
+   */
+  @ApiMethod(name = "getChildTechnologies", path = "technology/{parentId}/children", httpMethod = "get")
+  public List<Technology> getChildTechnologies(@Named("parentId") String parentId, User user)
+      throws InternalServerErrorException, NotFoundException, BadRequestException {
+    return service.getChildTechnologies(parentId, user);
+  }
+
+  /**
+   * Endpoint for setting parent technology relationship.
+   *
+   * @param childId the child technology ID.
+   * @param parentId the parent technology ID.
+   * @return updated child technology
+   * @throws InternalServerErrorException in case something goes wrong
+   * @throws NotFoundException in case the information are not founded
+   * @throws BadRequestException in case a request with problem were made.
+   */
+  @ApiMethod(name = "setParentTechnology", path = "technology/{childId}/parent/{parentId}", httpMethod = "post")
+  public Technology setParentTechnology(@Named("childId") String childId, 
+      @Named("parentId") String parentId, User user)
+      throws InternalServerErrorException, NotFoundException, BadRequestException {
+    return service.setParentTechnology(childId, parentId, user);
+  }
+
+  /**
+   * Endpoint for removing parent technology relationship.
+   *
+   * @param childId the child technology ID.
+   * @return updated child technology
+   * @throws InternalServerErrorException in case something goes wrong
+   * @throws NotFoundException in case the information are not founded
+   * @throws BadRequestException in case a request with problem were made.
+   */
+  @ApiMethod(name = "removeParentTechnology", path = "technology/{childId}/parent", httpMethod = "delete")
+  public Technology removeParentTechnology(@Named("childId") String childId, User user)
+      throws InternalServerErrorException, NotFoundException, BadRequestException {
+    return service.setParentTechnology(childId, null, user);
+  }
+
 }
