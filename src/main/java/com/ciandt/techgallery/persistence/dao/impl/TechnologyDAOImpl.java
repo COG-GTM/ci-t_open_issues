@@ -1,10 +1,14 @@
 package com.ciandt.techgallery.persistence.dao.impl;
 
 import com.googlecode.objectify.Objectify;
+import com.googlecode.objectify.Ref;
 
 import com.ciandt.techgallery.ofy.OfyService;
 import com.ciandt.techgallery.persistence.dao.TechnologyDAO;
 import com.ciandt.techgallery.persistence.model.Technology;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TechnologyDAOImpl methods implementation.
@@ -55,5 +59,46 @@ public class TechnologyDAOImpl extends GenericDAOImpl<Technology, String> implem
       return technology;
     }
     return null;
+  }
+
+  @Override
+  public List<Technology> findChildrenByParentId(String parentId) {
+    final Objectify objectify = OfyService.ofy();
+    Technology parent = findById(parentId);
+    if (parent == null) {
+      return new ArrayList<>();
+    }
+    
+    Ref<Technology> parentRef = Ref.create(parent);
+    return objectify.load().type(Technology.class)
+        .filter(Technology.PARENT_TECHNOLOGY, parentRef)
+        .filter(Technology.ACTIVE, true)
+        .list();
+  }
+
+  @Override
+  public List<Technology> findRootTechnologies() {
+    final Objectify objectify = OfyService.ofy();
+    return objectify.load().type(Technology.class)
+        .filter(Technology.PARENT_TECHNOLOGY, null)
+        .filter(Technology.ACTIVE, true)
+        .list();
+  }
+
+  @Override
+  public List<Technology> findTechnologyPath(String techId) {
+    List<Technology> path = new ArrayList<>();
+    Technology current = findByIdActive(techId);
+    
+    while (current != null) {
+      path.add(0, current);
+      if (current.getParentTechnology() != null) {
+        current = current.getParentTechnology().get();
+      } else {
+        current = null;
+      }
+    }
+    
+    return path;
   }
 }

@@ -21,6 +21,8 @@ import com.ciandt.techgallery.service.model.Response;
 import com.ciandt.techgallery.service.model.TechnologiesResponse;
 import com.ciandt.techgallery.service.model.TechnologyFilter;
 
+import com.googlecode.objectify.Ref;
+
 import org.apache.commons.lang.StringUtils;
 
 import java.io.ByteArrayInputStream;
@@ -30,7 +32,9 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -453,5 +457,101 @@ public class TechnologyServiceImpl implements TechnologyService {
     technology.setLastActivityUser(user.getEmail());
     technologyDAO.update(technology);
     return technology;
+  }
+
+  @Override
+  public Response getTechnologyHierarchy(String rootId, User user)
+      throws NotFoundException, BadRequestException, InternalServerErrorException {
+    validateUser(user);
+    Technology rootTech = technologyDAO.findByIdActive(rootId);
+    if (rootTech == null) {
+      throw new NotFoundException(ValidationMessageEnums.TECHNOLOGY_NOT_EXIST.message());
+    }
+
+    List<Technology> hierarchy = buildHierarchy(rootTech);
+    verifyTechnologyFollowedByUser(user, hierarchy);
+    
+    TechnologiesResponse response = new TechnologiesResponse();
+    response.setTechnologies(hierarchy);
+    return response;
+  }
+
+  @Override
+  public List<Technology> getChildTechnologies(String parentId, User user)
+      throws NotFoundException, BadRequestException, InternalServerErrorException {
+    validateUser(user);
+    Technology parent = technologyDAO.findByIdActive(parentId);
+    if (parent == null) {
+      throw new NotFoundException(ValidationMessageEnums.TECHNOLOGY_NOT_EXIST.message());
+    }
+
+    List<Technology> children = technologyDAO.findChildrenByParentId(parentId);
+    verifyTechnologyFollowedByUser(user, children);
+    return children;
+  }
+
+  @Override
+  public Technology setParentTechnology(String childId, String parentId, User user)
+      throws NotFoundException, BadRequestException, InternalServerErrorException {
+    validateUser(user);
+    
+    Technology child = technologyDAO.findByIdActive(childId);
+    if (child == null) {
+      throw new NotFoundException(ValidationMessageEnums.TECHNOLOGY_NOT_EXIST.message());
+    }
+
+    Technology parent = null;
+    if (parentId != null && !parentId.isEmpty()) {
+      parent = technologyDAO.findByIdActive(parentId);
+      if (parent == null) {
+        throw new NotFoundException(ValidationMessageEnums.TECHNOLOGY_NOT_EXIST.message());
+      }
+      child.setParentTechnology(Ref.create(parent));
+    } else {
+      child.setParentTechnology(null);
+    }
+
+    validateHierarchy(child);
+    child.setLastActivity(new Date());
+    child.setLastActivityUser(user.getEmail());
+    technologyDAO.update(child);
+    return child;
+  }
+
+  @Override
+  public void validateHierarchy(Technology tech) throws BadRequestException {
+    if (tech.getParentTechnology() == null) {
+      return;
+    }
+
+    Set<String> visited = new HashSet<>();
+    Technology current = tech;
+    
+    while (current != null) {
+      if (visited.contains(current.getId())) {
+        throw new BadRequestException("Circular reference detected in technology hierarchy");
+      }
+      visited.add(current.getId());
+      
+      if (current.getParentTechnology() != null) {
+        current = current.getParentTechnology().get();
+      } else {
+        current = null;
+      }
+    }
+  }
+
+  private List<Technology> buildHierarchy(Technology root) {
+    List<Technology> result = new ArrayList<>();
+    result.add(root);
+    
+    List<Technology> children = technologyDAO.findChildrenByParentId(root.getId());
+    root.setChildTechnologies(children);
+    
+    for (Technology child : children) {
+      result.addAll(buildHierarchy(child));
+    }
+    
+    return result;
   }
 }
