@@ -23,11 +23,12 @@ import com.ciandt.techgallery.service.model.EndorsementsGroupedByEndorsedTransie
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 
 /**
@@ -70,14 +71,14 @@ public class EndorsementServiceTest {
   }
 
   @Test
-  @Ignore
-  public void executaAgrupamento() throws BadRequestException, NotFoundException,
+  public void testEndorsementGrouping() throws BadRequestException, NotFoundException,
       InternalServerErrorException, OAuthRequestException {
-    // TODO Make the test work with objetify
     List<Endorsement> endorsements = createEndorsementList();
     List<EndorsementsGroupedByEndorsedTransient> groupEndorsementByEndorsed =
         service.groupEndorsementByEndorsed(endorsements, null);
-    groupEndorsementByEndorsed.get(0);
+    
+    assertNotNull(groupEndorsementByEndorsed);
+    assertFalse(groupEndorsementByEndorsed.isEmpty());
   }
 
   private List<Endorsement> createEndorsementList() {
