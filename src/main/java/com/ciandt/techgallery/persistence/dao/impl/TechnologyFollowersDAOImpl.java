@@ -1,6 +1,7 @@
 package com.ciandt.techgallery.persistence.dao.impl;
 
 import com.googlecode.objectify.Objectify;
+import com.googlecode.objectify.Ref;
 
 import com.ciandt.techgallery.ofy.OfyService;
 import com.ciandt.techgallery.persistence.dao.TechnologyFollowersDAO;
@@ -42,7 +43,7 @@ public class TechnologyFollowersDAOImpl extends GenericDAOImpl<TechnologyFollowe
   public TechnologyFollowers findByTechnology(Technology technology) {
     final Objectify objectify = OfyService.ofy();
     TechnologyFollowers entity = objectify.load().type(TechnologyFollowers.class)
-        .filter(TechnologyFollowers.TECHNOLOGY, technology).first().now();
+        .filter(TechnologyFollowers.TECHNOLOGY, Ref.create(technology)).first().now();
 
     return entity;
   }

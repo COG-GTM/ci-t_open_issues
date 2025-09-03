@@ -7,6 +7,7 @@ import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Load;
 
 import com.ciandt.techgallery.persistence.model.BaseEntity;
 import com.ciandt.techgallery.persistence.model.TechGalleryUser;
@@ -30,6 +31,7 @@ public class UserProfile extends BaseEntity<String> {
   private String id;
 
   @Index
+  @Load
   private Ref<TechGalleryUser> owner;
 
   private Map<String, UserProfileItem> positiveRecItems = new HashMap<>();
@@ -72,6 +74,17 @@ public class UserProfile extends BaseEntity<String> {
 
   public void setOwner(Ref<TechGalleryUser> owner) {
     this.owner = owner;
+  }
+
+  /**
+   * Returns the entity for the referred owner.
+   * @return TechGalleryUser
+   */
+  public TechGalleryUser getOwnerEntity() {
+    if (owner != null) {
+      return owner.get();
+    }
+    return null;
   }
 
   /**

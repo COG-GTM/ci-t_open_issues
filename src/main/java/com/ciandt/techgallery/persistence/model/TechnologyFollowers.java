@@ -4,8 +4,10 @@ import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.annotation.Unindex;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,9 +31,11 @@ public class TechnologyFollowers extends BaseEntity<String> {
   String id;
   /** Followed Technology. */
   @Index
+  @Load
   private Ref<Technology> technology;
   /** List of folowers. */
   @Unindex
+  @Load
   private List<Ref<TechGalleryUser>> followers;
 
   @Override
@@ -58,5 +62,33 @@ public class TechnologyFollowers extends BaseEntity<String> {
 
   public void setFollowers(List<Ref<TechGalleryUser>> followers) {
     this.followers = followers;
+  }
+
+  /**
+   * Returns the entity for the referred technology.
+   * @return Technology
+   */
+  public Technology getTechnologyEntity() {
+    if (technology != null) {
+      return technology.get();
+    }
+    return null;
+  }
+
+  /**
+   * Returns the list of actual follower entities.
+   * @return List<TechGalleryUser>
+   */
+  public List<TechGalleryUser> getFollowersEntities() {
+    if (followers != null) {
+      List<TechGalleryUser> followerEntities = new ArrayList<>();
+      for (Ref<TechGalleryUser> followerRef : followers) {
+        if (followerRef != null) {
+          followerEntities.add(followerRef.get());
+        }
+      }
+      return followerEntities;
+    }
+    return new ArrayList<>();
   }
 }
