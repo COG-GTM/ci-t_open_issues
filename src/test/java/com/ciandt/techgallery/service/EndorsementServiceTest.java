@@ -95,7 +95,7 @@ public class EndorsementServiceTest {
     endorsement.setEndorsed(Ref.create(endorsed));
     endorsement.setEndorser(Ref.create(endorser));
 
-    List<Endorsement> list = new ArrayList<Endorsement>();
+    List<Endorsement> list = new ArrayList<>();
     list.add(endorsement);
 
     return list;

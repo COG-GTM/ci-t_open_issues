@@ -12,8 +12,8 @@ import com.ciandt.techgallery.utils.Dereferencer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserProfileItemTransformer implements Transformer<UserProfileItem, UserProfileItemTo> {
 
@@ -34,19 +34,15 @@ public class UserProfileItemTransformer implements Transformer<UserProfileItem, 
   }
 
   private List<TechnologyComment> getDereferencedComments(UserProfileItem arg0) {
-    List<Ref<TechnologyComment>> commentsRefList = new ArrayList<Ref<TechnologyComment>>();
-    commentsRefList.addAll(arg0.getComments());
-    List<TechnologyComment> sortedComments = Dereferencer.deref(commentsRefList);
-    return sortedComments;
+    List<Ref<TechnologyComment>> commentsRefList = new ArrayList<>(arg0.getComments());
+    return Dereferencer.deref(commentsRefList);
   }
 
   private List<SubItemCommentTo> techCommentToSubItemCommentToList(
       List<TechnologyComment> comments) {
-    List<SubItemCommentTo> subItemTos = new ArrayList<SubItemCommentTo>();
-    for (TechnologyComment comment : comments) {
-      subItemTos.add(techCommentToSubItemComment(comment));
-    }
-    return subItemTos;
+    return comments.stream()
+        .map(this::techCommentToSubItemComment)
+        .collect(Collectors.toList());
 
   }
 
@@ -55,12 +51,9 @@ public class UserProfileItemTransformer implements Transformer<UserProfileItem, 
   }
 
   private void sortCommentsByTimestamp(List<SubItemCommentTo> commentsTo) {
-    Collections.sort(commentsTo, new Comparator<SubItemCommentTo>() {
-      @Override
-      public int compare(SubItemCommentTo comment1, SubItemCommentTo comment2) {
-        return Long.compare(comment2.getTimestamp().getTime(), comment1.getTimestamp().getTime());
-      }
-    });
+    Collections.sort(commentsTo,
+        (comment1, comment2) -> Long.compare(
+            comment2.getTimestamp().getTime(), comment1.getTimestamp().getTime()));
   }
 
 }

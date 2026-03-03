@@ -12,8 +12,8 @@ import com.ciandt.techgallery.persistence.model.TechnologyRecommendation;
 import com.ciandt.techgallery.service.impl.TechnologyRecommendationServiceImpl;
 import com.ciandt.techgallery.service.model.TechnologyCommentTO;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * TechnologyCommentConverter methods.
@@ -50,12 +50,9 @@ public class TechnologyCommentTransformer
    */
   public List<TechnologyCommentTO> fromEntityToTransient(List<TechnologyComment> entities) {
 
-    List<TechnologyCommentTO> commentsTo = new ArrayList<TechnologyCommentTO>();
-    for (TechnologyComment entity : entities) {
-      commentsTo.add(transformTo(entity));
-    }
-
-    return commentsTo;
+    return entities.stream()
+        .map(this::transformTo)
+        .collect(Collectors.toList());
   }
 
   /**

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class TechnologyRecommendationServiceImpl implements TechnologyRecommendationService {
 
@@ -123,11 +124,9 @@ public class TechnologyRecommendationServiceImpl implements TechnologyRecommenda
     }
     final List<TechnologyRecommendation> recommendations =
         technologyRecommendationDAO.findAllActivesByTechnology(technology);
-    final List<Response> recommendationTOs = new ArrayList<Response>();
-    for (final TechnologyRecommendation recommendation : recommendations) {
-      recommendationTOs.add(techRecTransformer.transformTo(recommendation));
-    }
-    return recommendationTOs;
+    return recommendations.stream()
+        .map(techRecTransformer::transformTo)
+        .collect(Collectors.toList());
 
   }
 
@@ -165,15 +164,10 @@ public class TechnologyRecommendationServiceImpl implements TechnologyRecommenda
    */
   private List<Response> getRecommendationsByTechnologyUserAndScore(String technologyId, User user,
       Boolean score) throws BadRequestException, InternalServerErrorException {
-    final List<Response> recommendationsUpTO = new ArrayList<Response>();
-    for (final Response recommendation : getRecommendations(technologyId, user)) {
-      final TechnologyRecommendationTO recommendationTO =
-          (TechnologyRecommendationTO) recommendation;
-      if (recommendationTO.getScore().equals(score)) {
-        recommendationsUpTO.add(recommendationTO);
-      }
-    }
-    return recommendationsUpTO;
+    return getRecommendations(technologyId, user).stream()
+        .map(recommendation -> (TechnologyRecommendationTO) recommendation)
+        .filter(recommendationTO -> recommendationTO.getScore().equals(score))
+        .collect(Collectors.toList());
   }
 
   @Override

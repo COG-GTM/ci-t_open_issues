@@ -108,10 +108,9 @@ public class UserServiceTGImpl implements UserServiceTG {
       throw new NotFoundException(OPERATION_FAILED);
     } else {
       UsersResponse response = new UsersResponse();
-      List<UserResponse> innerList = new ArrayList<UserResponse>();
+      List<UserResponse> innerList = new ArrayList<>();
 
-      for (int i = 0; i < userEntities.size(); i++) {
-        TechGalleryUser user = userEntities.get(i);
+      for (TechGalleryUser user : userEntities) {
         UserResponse userResponseItem = new UserResponse();
         userResponseItem.setId(user.getId());
         userResponseItem.setName(user.getName());

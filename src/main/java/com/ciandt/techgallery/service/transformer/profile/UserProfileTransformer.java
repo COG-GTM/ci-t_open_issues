@@ -29,7 +29,7 @@ public class UserProfileTransformer implements Transformer<UserProfile, UserProf
   }
 
   private List<UserProfileItem> getSortedItems(Map<String, UserProfileItem> items) {
-    ArrayList<UserProfileItem> sortedItems = new ArrayList<UserProfileItem>(items.values());
+    ArrayList<UserProfileItem> sortedItems = new ArrayList<>(items.values());
     Collections.sort(sortedItems);
     return sortedItems;
   }
