@@ -71,7 +71,7 @@ public class GooglePlusCommunicationServiceImpl implements SocialNetworkCommunic
     PlusDomainsAclentryResource resource = new PlusDomainsAclentryResource();
     resource.setType("domain");
 
-    List<PlusDomainsAclentryResource> aclEntries = new ArrayList<PlusDomainsAclentryResource>();
+    List<PlusDomainsAclentryResource> aclEntries = new ArrayList<>();
     aclEntries.add(resource);
 
     Acl acl = new Acl();

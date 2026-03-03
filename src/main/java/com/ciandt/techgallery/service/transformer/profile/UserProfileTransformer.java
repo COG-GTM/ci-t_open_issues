@@ -7,7 +7,6 @@ import com.ciandt.techgallery.persistence.model.profile.UserProfileItem;
 import com.ciandt.techgallery.service.model.profile.UserProfileTo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +28,8 @@ public class UserProfileTransformer implements Transformer<UserProfile, UserProf
   }
 
   private List<UserProfileItem> getSortedItems(Map<String, UserProfileItem> items) {
-    ArrayList<UserProfileItem> sortedItems = new ArrayList<UserProfileItem>(items.values());
-    Collections.sort(sortedItems);
+    ArrayList<UserProfileItem> sortedItems = new ArrayList<>(items.values());
+    sortedItems.sort(null);
     return sortedItems;
   }
 

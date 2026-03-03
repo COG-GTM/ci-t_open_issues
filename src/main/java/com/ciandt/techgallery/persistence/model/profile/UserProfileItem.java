@@ -26,7 +26,7 @@ public class UserProfileItem implements Comparable<UserProfileItem> {
   private Integer skillLevel;
 
   @Load
-  private Set<Ref<TechnologyComment>> comments = new HashSet<Ref<TechnologyComment>>();
+  private Set<Ref<TechnologyComment>> comments = new HashSet<>();
 
   public UserProfileItem() {}
 
@@ -51,7 +51,7 @@ public class UserProfileItem implements Comparable<UserProfileItem> {
    */
   public void addComment(TechnologyComment originComment) {
     if (comments == null) {
-      comments = new HashSet<Ref<TechnologyComment>>();
+      comments = new HashSet<>();
     }
     comments.add(Ref.create(originComment));
   }

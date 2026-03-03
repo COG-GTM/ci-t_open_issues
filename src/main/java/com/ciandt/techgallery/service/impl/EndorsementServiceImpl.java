@@ -33,11 +33,11 @@ import com.ciandt.techgallery.service.profile.UserProfileService;
 import com.ciandt.techgallery.utils.i18n.I18n;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Services for Endorsement Endpoint requests.
@@ -328,7 +328,7 @@ public class EndorsementServiceImpl implements EndorsementService {
     final List<Endorsement> endorsementsByTech = endorsementDao.findAllActivesByTechnology(techId);
     final List<EndorsementsGroupedByEndorsedTransient> grouped =
         groupEndorsementByEndorsed(endorsementsByTech, techId);
-    Collections.sort(grouped, new EndorsementsGroupedByEndorsedTransient());
+    grouped.sort(new EndorsementsGroupedByEndorsedTransient());
 
     final Technology technology = techService.getTechnologyById(techId, user);
     techService.updateEdorsedsCounter(technology, grouped.size());
@@ -343,21 +343,12 @@ public class EndorsementServiceImpl implements EndorsementService {
       List<Endorsement> endorsements, String techId) throws BadRequestException, NotFoundException,
           InternalServerErrorException, OAuthRequestException {
 
-    final Map<TechGalleryUser, List<TechGalleryUser>> mapUsersGrouped =
-        new HashMap<TechGalleryUser, List<TechGalleryUser>>();
+    final Map<TechGalleryUser, List<TechGalleryUser>> mapUsersGrouped = new HashMap<>();
 
     for (final Endorsement endorsement : endorsements) {
       final TechGalleryUser endorsed = endorsement.getEndorsedEntity();
-
-      if (mapUsersGrouped.containsKey(endorsed)) {
-        final List<TechGalleryUser> endorsersList = mapUsersGrouped.get(endorsed);
-        endorsersList.add(endorsement.getEndorserEntity());
-        mapUsersGrouped.put(endorsed, endorsersList);
-      } else {
-        final List<TechGalleryUser> endorsersList = new ArrayList<TechGalleryUser>();
-        endorsersList.add(endorsement.getEndorserEntity());
-        mapUsersGrouped.put(endorsed, endorsersList);
-      }
+      mapUsersGrouped.computeIfAbsent(endorsed, k -> new ArrayList<>())
+          .add(endorsement.getEndorserEntity());
     }
     return transformGroupedUserMapIntoList(mapUsersGrouped, techId);
   }
@@ -366,8 +357,7 @@ public class EndorsementServiceImpl implements EndorsementService {
       Map<TechGalleryUser, List<TechGalleryUser>> mapUsersGrouped, String techId)
           throws BadRequestException, NotFoundException, InternalServerErrorException,
           OAuthRequestException {
-    final List<EndorsementsGroupedByEndorsedTransient> groupedList =
-        new ArrayList<EndorsementsGroupedByEndorsedTransient>();
+    final List<EndorsementsGroupedByEndorsedTransient> groupedList = new ArrayList<>();
 
     for (final Map.Entry<TechGalleryUser, List<TechGalleryUser>> entry : mapUsersGrouped
         .entrySet()) {

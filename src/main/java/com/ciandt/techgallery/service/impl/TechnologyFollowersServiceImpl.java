@@ -108,11 +108,11 @@ public class TechnologyFollowersServiceImpl implements TechnologyFollowersServic
       technologyFollowers = new TechnologyFollowers();
       technologyFollowers.setId(technology.getId());
       technologyFollowers.setTechnology(Ref.create(technology));
-      technologyFollowers.setFollowers(new ArrayList<Ref<TechGalleryUser>>());
+      technologyFollowers.setFollowers(new ArrayList<>());
     }
     technologyFollowers.getFollowers().add(Ref.create(techUser));
     if (techUser.getFollowedTechnologyIds() == null) {
-      techUser.setFollowedTechnologyIds(new ArrayList<String>());
+      techUser.setFollowedTechnologyIds(new ArrayList<>());
     }
     techUser.getFollowedTechnologyIds().add(technology.getId());
     return technologyFollowers;
