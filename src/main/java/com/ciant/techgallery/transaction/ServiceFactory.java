@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class ServiceFactory {
 
-  private static Map<String, Object> cache = new HashMap<String, Object>();
+  private static Map<String, Object> cache = new HashMap<>();
 
   /**
    * Creates a service instance following the rules below. -If a service implementation has

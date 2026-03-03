@@ -56,7 +56,7 @@ public class EndorsementDAOImpl extends GenericDAOImpl<Endorsement, Long>
         .filter(Endorsement.TECHNOLOGY, Ref.create(tech)).list();
 
     if (entities == null || entities.size() <= 0) {
-      return new ArrayList<Endorsement>();
+      return new ArrayList<>();
     }
     return entities;
   }
@@ -73,7 +73,7 @@ public class EndorsementDAOImpl extends GenericDAOImpl<Endorsement, Long>
         .filter(Endorsement.TECHNOLOGY, Ref.create(tech)).filter("active", true).list();
 
     if (entities == null || entities.size() <= 0) {
-      return new ArrayList<Endorsement>();
+      return new ArrayList<>();
     }
     return entities;
   }

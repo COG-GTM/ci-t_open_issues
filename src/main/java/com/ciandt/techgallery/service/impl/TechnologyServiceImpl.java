@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -195,14 +196,10 @@ public class TechnologyServiceImpl implements TechnologyService {
   }
 
   private List<Technology> setDateFilteredList(List<Technology> completeList, Date dateReference) {
-    List<Technology> dateFilteredList = new ArrayList<>();
-    for (Technology technology : completeList) {
-      if (technology.getLastActivity().after(dateReference)
-          || technology.getLastActivity().equals(dateReference)) {
-        dateFilteredList.add(technology);
-      }
-    }
-    return dateFilteredList;
+    return completeList.stream()
+        .filter(technology -> technology.getLastActivity().after(dateReference)
+            || technology.getLastActivity().equals(dateReference))
+        .collect(Collectors.toList());
   }
 
   private Date setDateReference(Date currentDate, int daysToSubtract) {
@@ -374,7 +371,7 @@ public class TechnologyServiceImpl implements TechnologyService {
 
   @Override
   public List<String> getOrderOptions(User user) {
-    List<String> orderOptions = new ArrayList<String>();
+    List<String> orderOptions = new ArrayList<>();
     for (TechnologyOrderOptionEnum item : TechnologyOrderOptionEnum.values()) {
       orderOptions.add(item.option());
     }
