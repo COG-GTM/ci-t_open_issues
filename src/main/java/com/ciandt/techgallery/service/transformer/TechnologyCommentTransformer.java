@@ -12,7 +12,6 @@ import com.ciandt.techgallery.persistence.model.TechnologyRecommendation;
 import com.ciandt.techgallery.service.impl.TechnologyRecommendationServiceImpl;
 import com.ciandt.techgallery.service.model.TechnologyCommentTO;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
