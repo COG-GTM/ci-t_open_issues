@@ -341,12 +341,8 @@ public class Technology extends BaseEntity<String> {
    * @param techEntities List of technologies.
    */
   public static void sortTechnologiesDefault(List<Technology> techEntities) {
-    Collections.sort(techEntities, new Comparator<Technology>() {
-      @Override
-      public int compare(Technology counter1, Technology counter2) {
-        return counter2.getLastActivity().compareTo(counter1.getLastActivity());
-      }
-    });
+    Collections.sort(techEntities,
+        (counter1, counter2) -> counter2.getLastActivity().compareTo(counter1.getLastActivity()));
   }
 
   /**

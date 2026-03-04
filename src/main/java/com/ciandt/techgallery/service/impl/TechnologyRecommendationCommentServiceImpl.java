@@ -83,7 +83,7 @@ public class TechnologyRecommendationCommentServiceImpl
    */
   private boolean isValidComment(TechnologyComment comment) {
     return comment != null && comment.getComment() != null
-        && !comment.getComment().trim().equals("");
+        && !comment.getComment().trim().isEmpty();
   }
 
   @Override

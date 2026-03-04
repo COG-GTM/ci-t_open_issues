@@ -7,13 +7,37 @@ A skeleton application for Google Cloud Endpoints in Java.
 - [App Engine][1]
 
 ## Language
-- [Java][2]
+- [Java 8][2]
 
 ## APIs
 - [Google Cloud Endpoints][3]
 - [Google App Engine Maven plugin][4]
 
+## Prerequisites
+- **Java 8 (JDK 1.8)** or higher
+- **Apache Maven 3.x**
+- A Google App Engine account (for deployment)
+
+## Java 8 Upgrade Notes
+
+This project has been upgraded from Java 7 to Java 8. The following Java 8 features are now used throughout the codebase:
+
+- **Lambda expressions** - Anonymous inner classes replaced with lambdas (e.g., `Comparator` implementations in sorting)
+- **Streams API** - Traditional for-loops converted to `stream().filter().map().collect()` patterns for data processing
+- **Method references** - Used where applicable for improved readability (e.g., `TechnologyOrderOptionEnum::option`)
+- **Diamond operator** - Generic type arguments inferred by the compiler (e.g., `new ArrayList<>()`)
+- **`java.time` API** - `Calendar`-based date arithmetic replaced with `java.time.Instant` and `ChronoUnit`
+- **`java.util.Base64`** - Replaces deprecated `javax.xml.bind.DatatypeConverter` for Base64 encoding/decoding
+- **`Map.computeIfAbsent`** - Simplifies map-based grouping logic
+- **Try-with-resources** - Ensures proper resource cleanup (e.g., `Scanner`)
+
 ## Setup Instructions
+
+1. Ensure you have **JDK 8** installed. Verify with:
+
+       $ java -version
+
+   You should see output indicating version `1.8.x`.
 
 1. Update the value of `application` in `appengine-web.xml` to the app
    ID you have registered in the App Engine admin console and would
@@ -32,13 +56,21 @@ A skeleton application for Google Cloud Endpoints in Java.
        in the [APIs Console][4] to your client of choice (web, Android,
        iOS).
 
+1. Compile the project:
+
+       $ mvn compile
+
+1. Run the tests:
+
+       $ mvn test
+
 1. Run the application with `mvn appengine:devserver`, and ensure it's
    running by visiting your local server's api explorer's address (by
    default [localhost:8080/_ah/api/explorer][5].)
 
 1. Get the client library with
 
-   $ mvnappengine:endpoints_get_client_lib
+       $ mvn appengine:endpoints_get_client_lib
 
    It will generate a client library jar file under the
    `target/endpoints-client-libs/<api-name>/target` directory of your
@@ -47,7 +79,7 @@ A skeleton application for Google Cloud Endpoints in Java.
 
 1. Deploy your application to Google App Engine with
 
-   $ mvn appengine:update
+       $ mvn appengine:update
 
 [1]: https://developers.google.com/appengine
 [2]: http://java.com/en/

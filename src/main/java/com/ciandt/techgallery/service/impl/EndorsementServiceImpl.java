@@ -38,6 +38,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Services for Endorsement Endpoint requests.
@@ -343,21 +344,13 @@ public class EndorsementServiceImpl implements EndorsementService {
       List<Endorsement> endorsements, String techId) throws BadRequestException, NotFoundException,
           InternalServerErrorException, OAuthRequestException {
 
-    final Map<TechGalleryUser, List<TechGalleryUser>> mapUsersGrouped =
-        new HashMap<TechGalleryUser, List<TechGalleryUser>>();
+    final Map<TechGalleryUser, List<TechGalleryUser>> mapUsersGrouped = new HashMap<>();
 
     for (final Endorsement endorsement : endorsements) {
       final TechGalleryUser endorsed = endorsement.getEndorsedEntity();
-
-      if (mapUsersGrouped.containsKey(endorsed)) {
-        final List<TechGalleryUser> endorsersList = mapUsersGrouped.get(endorsed);
-        endorsersList.add(endorsement.getEndorserEntity());
-        mapUsersGrouped.put(endorsed, endorsersList);
-      } else {
-        final List<TechGalleryUser> endorsersList = new ArrayList<TechGalleryUser>();
-        endorsersList.add(endorsement.getEndorserEntity());
-        mapUsersGrouped.put(endorsed, endorsersList);
-      }
+      mapUsersGrouped
+          .computeIfAbsent(endorsed, k -> new ArrayList<>())
+          .add(endorsement.getEndorserEntity());
     }
     return transformGroupedUserMapIntoList(mapUsersGrouped, techId);
   }
@@ -366,8 +359,7 @@ public class EndorsementServiceImpl implements EndorsementService {
       Map<TechGalleryUser, List<TechGalleryUser>> mapUsersGrouped, String techId)
           throws BadRequestException, NotFoundException, InternalServerErrorException,
           OAuthRequestException {
-    final List<EndorsementsGroupedByEndorsedTransient> groupedList =
-        new ArrayList<EndorsementsGroupedByEndorsedTransient>();
+    final List<EndorsementsGroupedByEndorsedTransient> groupedList = new ArrayList<>();
 
     for (final Map.Entry<TechGalleryUser, List<TechGalleryUser>> entry : mapUsersGrouped
         .entrySet()) {
@@ -375,11 +367,7 @@ public class EndorsementServiceImpl implements EndorsementService {
           new EndorsementsGroupedByEndorsedTransient();
       grouped.setEndorsed(entry.getKey());
       final Skill response = skillService.getUserSkill(techId, entry.getKey());
-      if (response != null) {
-        grouped.setEndorsedSkill(response.getValue());
-      } else {
-        grouped.setEndorsedSkill(0);
-      }
+      grouped.setEndorsedSkill(response != null ? response.getValue() : 0);
       grouped.setEndorsers(entry.getValue());
       groupedList.add(grouped);
     }
