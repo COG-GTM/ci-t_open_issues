@@ -11,7 +11,7 @@ import java.util.Date;
  */
 public class TimezoneManager {
 
-  private static final ThreadLocal<Integer> timezone = new ThreadLocal<Integer>();
+  private static final ThreadLocal<Integer> timezone = new ThreadLocal<>();
 
   private static final TimezoneManager INSTANCE = new TimezoneManager();
 

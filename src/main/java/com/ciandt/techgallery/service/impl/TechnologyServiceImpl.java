@@ -27,12 +27,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.Normalizer;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-
-import javax.xml.bind.DatatypeConverter;
+import java.util.stream.Collectors;
 
 /**
  * Services for Technology Endpoint requests.
@@ -87,7 +88,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     if (technology.getImageContent() != null) {
       imageLink =
           storageDAO.insertImage(convertNameToId(technology.getName()), new ByteArrayInputStream(
-              DatatypeConverter.parseBase64Binary(technology.getImageContent())));
+              Base64.getDecoder().decode(technology.getImageContent())));
     }
 
     fillTechnology(technology, user, imageLink, isUpdate);
@@ -195,22 +196,14 @@ public class TechnologyServiceImpl implements TechnologyService {
   }
 
   private List<Technology> setDateFilteredList(List<Technology> completeList, Date dateReference) {
-    List<Technology> dateFilteredList = new ArrayList<>();
-    for (Technology technology : completeList) {
-      if (technology.getLastActivity().after(dateReference)
-          || technology.getLastActivity().equals(dateReference)) {
-        dateFilteredList.add(technology);
-      }
-    }
-    return dateFilteredList;
+    return completeList.stream()
+        .filter(technology -> !technology.getLastActivity().before(dateReference))
+        .collect(Collectors.toList());
   }
 
   private Date setDateReference(Date currentDate, int daysToSubtract) {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(currentDate);
-    cal.add(Calendar.DATE, daysToSubtract);
-    Date dateReference = cal.getTime();
-    return dateReference;
+    Instant instant = currentDate.toInstant().plus(daysToSubtract, ChronoUnit.DAYS);
+    return Date.from(instant);
   }
 
   @Override
@@ -280,11 +273,9 @@ public class TechnologyServiceImpl implements TechnologyService {
     TechGalleryUser techUser = userService.getUserByGoogleId(user.getUserId());
     if (techUser.getFollowedTechnologyIds() != null
         && !techUser.getFollowedTechnologyIds().isEmpty()) {
-      for (Technology technology : filteredList) {
-        if (techUser.getFollowedTechnologyIds().contains(technology.getId())) {
-          technology.setFollowedByUser(true);
-        }
-      }
+      filteredList.stream()
+          .filter(technology -> techUser.getFollowedTechnologyIds().contains(technology.getId()))
+          .forEach(technology -> technology.setFollowedByUser(true));
     }
   }
 
@@ -374,11 +365,9 @@ public class TechnologyServiceImpl implements TechnologyService {
 
   @Override
   public List<String> getOrderOptions(User user) {
-    List<String> orderOptions = new ArrayList<String>();
-    for (TechnologyOrderOptionEnum item : TechnologyOrderOptionEnum.values()) {
-      orderOptions.add(item.option());
-    }
-    return orderOptions;
+    return java.util.Arrays.stream(TechnologyOrderOptionEnum.values())
+        .map(TechnologyOrderOptionEnum::option)
+        .collect(Collectors.toList());
   }
 
   @Override

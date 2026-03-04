@@ -5,6 +5,7 @@ import com.ciandt.techgallery.persistence.model.Technology;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Arrays;
 
 /**
  * Enum for mapping Order Options.
@@ -17,59 +18,38 @@ public enum TechnologyOrderOptionEnum {
   POSITIVE_RECOMMENDATION_AMOUNT("Quantidade de Recomendações Positivas") {
     @Override
     public void sort(List<Technology> techList) {
-      Collections.sort(techList, new Comparator<Technology>() {
-        @Override
-        public int compare(Technology counter1, Technology counter2) {
-          return Integer.compare(counter2.getPositiveRecommendationsCounter(),
-              counter1.getPositiveRecommendationsCounter());
-        }
-      });
+      Collections.sort(techList, (counter1, counter2) -> Integer.compare(
+          counter2.getPositiveRecommendationsCounter(),
+          counter1.getPositiveRecommendationsCounter()));
     }
   },
   NEGATIVE_RECOMMENDATION_AMOUNT("Quantidade de Recomendações Negativas") {
     @Override
     public void sort(List<Technology> techList) {
-      Collections.sort(techList, new Comparator<Technology>() {
-        @Override
-        public int compare(Technology counter1, Technology counter2) {
-          return Integer.compare(counter2.getNegativeRecommendationsCounter(),
-              counter1.getNegativeRecommendationsCounter());
-        }
-      });
+      Collections.sort(techList, (counter1, counter2) -> Integer.compare(
+          counter2.getNegativeRecommendationsCounter(),
+          counter1.getNegativeRecommendationsCounter()));
     }
   },
   COMMENT_AMOUNT("Quantidade de Comentários") {
     @Override
     public void sort(List<Technology> techList) {
-      Collections.sort(techList, new Comparator<Technology>() {
-        @Override
-        public int compare(Technology counter1, Technology counter2) {
-          return Integer.compare(counter2.getCommentariesCounter(),
-              counter1.getCommentariesCounter());
-        }
-      });
+      Collections.sort(techList, (counter1, counter2) -> Integer.compare(
+          counter2.getCommentariesCounter(), counter1.getCommentariesCounter()));
     }
   },
   ENDORSEMENT_AMOUNT("Quantidade de Indicações") {
     @Override
     public void sort(List<Technology> techList) {
-      Collections.sort(techList, new Comparator<Technology>() {
-        @Override
-        public int compare(Technology counter1, Technology counter2) {
-          return Integer.compare(counter2.getEndorsersCounter(), counter1.getEndorsersCounter());
-        }
-      });
+      Collections.sort(techList, (counter1, counter2) -> Integer.compare(
+          counter2.getEndorsersCounter(), counter1.getEndorsersCounter()));
     }
   },
   APHABETIC("Alfabética") {
     @Override
     public void sort(List<Technology> techList) {
-      Collections.sort(techList, new Comparator<Technology>() {
-        @Override
-        public int compare(Technology counter1, Technology counter2) {
-          return counter1.getName().compareTo(counter2.getName());
-        }
-      });
+      Collections.sort(techList,
+          (counter1, counter2) -> counter1.getName().compareTo(counter2.getName()));
     }
   };
 
@@ -92,11 +72,10 @@ public enum TechnologyOrderOptionEnum {
    */
   public static TechnologyOrderOptionEnum fromString(String text) {
     if (text != null) {
-      for (TechnologyOrderOptionEnum item : TechnologyOrderOptionEnum.values()) {
-        if (text.equalsIgnoreCase(item.option())) {
-          return item;
-        }
-      }
+      return Arrays.stream(TechnologyOrderOptionEnum.values())
+          .filter(item -> text.equalsIgnoreCase(item.option()))
+          .findFirst()
+          .orElse(null);
     }
     return null;
   }

@@ -101,7 +101,7 @@ public class CronServiceImpl implements CronService {
           techGalleryActivitiesTo.setFollower(follower);
           techGalleryActivitiesTo.setAppName(Constants.APP_NAME);
           List<TechnologyActivitiesEmailTemplateTO> techActivitiesToList =
-              new ArrayList<TechnologyActivitiesEmailTemplateTO>();
+              new ArrayList<>();
 
           for (String id : follower.getFollowedTechnologyIds()) {
             Technology technology = technologyDao.findById(id);
@@ -186,7 +186,7 @@ public class CronServiceImpl implements CronService {
         if (endorsementsList != null) {
           TechGalleryActivitiesEmailTemplateTO activities =
               new TechGalleryActivitiesEmailTemplateTO(Constants.APP_NAME, null,
-                  new ArrayList<TechnologyActivitiesEmailTemplateTO>());
+                  new ArrayList<>());
           for (Endorsement endorsement : endorsementsList) {
             TechnologyActivitiesEmailTemplateTO endorsementActivity =
                 new TechnologyActivitiesEmailTemplateTO(endorsement.getEndorserEntity(),

@@ -71,7 +71,7 @@ public class GooglePlusCommunicationServiceImpl implements SocialNetworkCommunic
     PlusDomainsAclentryResource resource = new PlusDomainsAclentryResource();
     resource.setType("domain");
 
-    List<PlusDomainsAclentryResource> aclEntries = new ArrayList<PlusDomainsAclentryResource>();
+    List<PlusDomainsAclentryResource> aclEntries = new ArrayList<>();
     aclEntries.add(resource);
 
     Acl acl = new Acl();
@@ -87,7 +87,7 @@ public class GooglePlusCommunicationServiceImpl implements SocialNetworkCommunic
     Activity.PlusDomainsObject.Attachments attachment = new Activity.PlusDomainsObject.Attachments();
     attachment.setObjectType("article");
     attachment.setUrl(techGalleryLink);
-    List<Activity.PlusDomainsObject.Attachments> attachments = new ArrayList();
+    List<Activity.PlusDomainsObject.Attachments> attachments = new ArrayList<>();
     attachments.add(attachment); // You can also add multiple attachments to the
                                  // post
     activity.getObject().setAttachments(attachments);
