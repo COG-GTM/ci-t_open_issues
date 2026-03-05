@@ -32,7 +32,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.DatatypeConverter;
+import java.util.Base64;
 
 /**
  * Services for Technology Endpoint requests.
@@ -87,7 +87,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     if (technology.getImageContent() != null) {
       imageLink =
           storageDAO.insertImage(convertNameToId(technology.getName()), new ByteArrayInputStream(
-              DatatypeConverter.parseBase64Binary(technology.getImageContent())));
+              Base64.getDecoder().decode(technology.getImageContent())));
     }
 
     fillTechnology(technology, user, imageLink, isUpdate);

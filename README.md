@@ -7,11 +7,15 @@ A skeleton application for Google Cloud Endpoints in Java.
 - [App Engine][1]
 
 ## Language
-- [Java][2]
+- [Java 21][2]
 
 ## APIs
 - [Google Cloud Endpoints][3]
 - [Google App Engine Maven plugin][4]
+
+## Prerequisites
+- Java 21 (JDK 21)
+- Maven 3.1.0 or higher
 
 ## Setup Instructions
 
