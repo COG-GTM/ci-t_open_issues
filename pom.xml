@@ -12,6 +12,7 @@
     <properties>
         <app.id>tech-gallery</app.id>
         <app.version>${app_version}</app.version>
+        <java.version>21</java.version>
         <appengine.version>1.9.27</appengine.version>
         <gcloud.plugin.version>0.9.58.v20150505</gcloud.plugin.version>
         <jackson.databind-version>2.2.3</jackson.databind-version>
@@ -115,8 +116,8 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>2.0.2-beta</version>
+            <artifactId>mockito-core</artifactId>
+            <version>4.11.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -149,6 +150,12 @@
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
         </dependency>
+        <!-- JavaMail API (removed from JDK in Java 11) -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
     </dependencies>
     <build>
         <!-- for hot reload of the web application -->
@@ -170,13 +177,11 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <version>3.1</version>
+                <version>3.11.0</version>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <fork>true</fork>
-                    <executable>${JAVA_HOME}\bin\javac</executable>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
