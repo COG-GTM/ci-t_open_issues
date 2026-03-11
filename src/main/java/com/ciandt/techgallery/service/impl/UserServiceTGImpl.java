@@ -6,12 +6,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -108,17 +108,16 @@ public class UserServiceTGImpl implements UserServiceTG {
       throw new NotFoundException(OPERATION_FAILED);
     } else {
       UsersResponse response = new UsersResponse();
-      List<UserResponse> innerList = new ArrayList<UserResponse>();
-
-      for (int i = 0; i < userEntities.size(); i++) {
-        TechGalleryUser user = userEntities.get(i);
-        UserResponse userResponseItem = new UserResponse();
-        userResponseItem.setId(user.getId());
-        userResponseItem.setName(user.getName());
-        userResponseItem.setEmail(user.getEmail());
-        userResponseItem.setPhoto(user.getPhoto());
-        innerList.add(userResponseItem);
-      }
+      List<UserResponse> innerList = userEntities.stream()
+          .map(user -> {
+            UserResponse userResponseItem = new UserResponse();
+            userResponseItem.setId(user.getId());
+            userResponseItem.setName(user.getName());
+            userResponseItem.setEmail(user.getEmail());
+            userResponseItem.setPhoto(user.getPhoto());
+            return userResponseItem;
+          })
+          .collect(Collectors.toList());
 
       response.setUsers(innerList);
       return response;
@@ -353,7 +352,8 @@ public class UserServiceTGImpl implements UserServiceTG {
 
     TechGalleryUser tgUser = new TechGalleryUser();
     Map<String, Object> providerResponse = peopleApiConnect(userLogin, PEOPLE_ENDPOINT_PROFILE);
-    HashMap<String, Object> userData = (LinkedHashMap) providerResponse.get("personal_info");
+    @SuppressWarnings("unchecked")
+    Map<String, Object> userData = (Map<String, Object>) providerResponse.get("personal_info");
     tgUser.setEmail((String) userData.get("email"));
     tgUser.setName((String) userData.get("name"));
     return tgUser;

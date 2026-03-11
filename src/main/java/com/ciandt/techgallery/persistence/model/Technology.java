@@ -11,7 +11,6 @@ import com.googlecode.objectify.annotation.Unindex;
 import com.ciandt.techgallery.service.enums.TechnologyOrderOptionEnum;
 import com.ciandt.techgallery.service.transformer.TechnologyTransformer;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -341,12 +340,7 @@ public class Technology extends BaseEntity<String> {
    * @param techEntities List of technologies.
    */
   public static void sortTechnologiesDefault(List<Technology> techEntities) {
-    Collections.sort(techEntities, new Comparator<Technology>() {
-      @Override
-      public int compare(Technology counter1, Technology counter2) {
-        return counter2.getLastActivity().compareTo(counter1.getLastActivity());
-      }
-    });
+    techEntities.sort(Comparator.comparing(Technology::getLastActivity).reversed());
   }
 
   /**
