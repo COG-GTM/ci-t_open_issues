@@ -31,8 +31,9 @@ import com.ciandt.techgallery.servlets.CronActivityResumeServlet;
 import com.ciandt.techgallery.utils.timezone.TimezoneManager;
 import com.ciant.techgallery.transaction.Transactional;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -100,8 +101,7 @@ public class CronServiceImpl implements CronService {
           techGalleryActivitiesTo.setTimestamp(new Date());
           techGalleryActivitiesTo.setFollower(follower);
           techGalleryActivitiesTo.setAppName(Constants.APP_NAME);
-          List<TechnologyActivitiesEmailTemplateTO> techActivitiesToList =
-              new ArrayList<TechnologyActivitiesEmailTemplateTO>();
+          List<TechnologyActivitiesEmailTemplateTO> techActivitiesToList = new ArrayList<>();
 
           for (String id : follower.getFollowedTechnologyIds()) {
             Technology technology = technologyDao.findById(id);
@@ -160,16 +160,12 @@ public class CronServiceImpl implements CronService {
   }
 
   private Date findLastExecutedCronJob(String cronJob) {
-    Date lastCronJobExecDate;
     CronJob lastCronJob = cronJobsDao.findLastExecutedCronJob(cronJob);
     if (lastCronJob != null) {
-      lastCronJobExecDate = lastCronJob.getStartTimestamp();
+      return lastCronJob.getStartTimestamp();
     } else {
-      Calendar cal = Calendar.getInstance();
-      cal.add(Calendar.DAY_OF_MONTH, -1);
-      lastCronJobExecDate = cal.getTime();
+      return Date.from(Instant.now().minus(1, ChronoUnit.DAYS));
     }
-    return lastCronJobExecDate;
   }
 
   @Override
@@ -186,7 +182,7 @@ public class CronServiceImpl implements CronService {
         if (endorsementsList != null) {
           TechGalleryActivitiesEmailTemplateTO activities =
               new TechGalleryActivitiesEmailTemplateTO(Constants.APP_NAME, null,
-                  new ArrayList<TechnologyActivitiesEmailTemplateTO>());
+                  new ArrayList<>());
           for (Endorsement endorsement : endorsementsList) {
             TechnologyActivitiesEmailTemplateTO endorsementActivity =
                 new TechnologyActivitiesEmailTemplateTO(endorsement.getEndorserEntity(),

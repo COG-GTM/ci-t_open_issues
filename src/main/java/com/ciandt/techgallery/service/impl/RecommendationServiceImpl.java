@@ -11,9 +11,9 @@ import com.ciandt.techgallery.service.UserServiceTG;
 import com.ciandt.techgallery.service.enums.RecommendationEnums;
 import com.ciandt.techgallery.service.enums.ValidationMessageEnums;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Services for Recommendation Endpoint requests.
@@ -47,12 +47,9 @@ public class RecommendationServiceImpl implements RecommendationService {
   public List<String> getRecommendations(User user)
       throws NotFoundException, BadRequestException, InternalServerErrorException {
     validateUser(user);
-    final List<RecommendationEnums> enumValues = Arrays.asList(RecommendationEnums.values());
-    final List<String> recommendations = new ArrayList<>();
-    for (final RecommendationEnums enumEntry : enumValues) {
-      recommendations.add(enumEntry.message());
-    }
-    return recommendations;
+    return Arrays.stream(RecommendationEnums.values())
+        .map(RecommendationEnums::message)
+        .collect(Collectors.toList());
   }
 
   /**

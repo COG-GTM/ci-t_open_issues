@@ -2,7 +2,6 @@ package com.ciandt.techgallery.service.enums;
 
 import com.ciandt.techgallery.persistence.model.Technology;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -17,59 +16,35 @@ public enum TechnologyOrderOptionEnum {
   POSITIVE_RECOMMENDATION_AMOUNT("Quantidade de Recomendações Positivas") {
     @Override
     public void sort(List<Technology> techList) {
-      Collections.sort(techList, new Comparator<Technology>() {
-        @Override
-        public int compare(Technology counter1, Technology counter2) {
-          return Integer.compare(counter2.getPositiveRecommendationsCounter(),
-              counter1.getPositiveRecommendationsCounter());
-        }
-      });
+      techList.sort(Comparator.comparingInt(
+          (Technology t) -> t.getPositiveRecommendationsCounter()).reversed());
     }
   },
   NEGATIVE_RECOMMENDATION_AMOUNT("Quantidade de Recomendações Negativas") {
     @Override
     public void sort(List<Technology> techList) {
-      Collections.sort(techList, new Comparator<Technology>() {
-        @Override
-        public int compare(Technology counter1, Technology counter2) {
-          return Integer.compare(counter2.getNegativeRecommendationsCounter(),
-              counter1.getNegativeRecommendationsCounter());
-        }
-      });
+      techList.sort(Comparator.comparingInt(
+          (Technology t) -> t.getNegativeRecommendationsCounter()).reversed());
     }
   },
   COMMENT_AMOUNT("Quantidade de Comentários") {
     @Override
     public void sort(List<Technology> techList) {
-      Collections.sort(techList, new Comparator<Technology>() {
-        @Override
-        public int compare(Technology counter1, Technology counter2) {
-          return Integer.compare(counter2.getCommentariesCounter(),
-              counter1.getCommentariesCounter());
-        }
-      });
+      techList.sort(Comparator.comparingInt(
+          (Technology t) -> t.getCommentariesCounter()).reversed());
     }
   },
   ENDORSEMENT_AMOUNT("Quantidade de Indicações") {
     @Override
     public void sort(List<Technology> techList) {
-      Collections.sort(techList, new Comparator<Technology>() {
-        @Override
-        public int compare(Technology counter1, Technology counter2) {
-          return Integer.compare(counter2.getEndorsersCounter(), counter1.getEndorsersCounter());
-        }
-      });
+      techList.sort(Comparator.comparingInt(
+          (Technology t) -> t.getEndorsersCounter()).reversed());
     }
   },
   APHABETIC("Alfabética") {
     @Override
     public void sort(List<Technology> techList) {
-      Collections.sort(techList, new Comparator<Technology>() {
-        @Override
-        public int compare(Technology counter1, Technology counter2) {
-          return counter1.getName().compareTo(counter2.getName());
-        }
-      });
+      techList.sort(Comparator.comparing(Technology::getName));
     }
   };
 

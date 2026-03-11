@@ -51,15 +51,12 @@ public class TransactionalInvocationHandler implements InvocationHandler {
         final IdempotencyHandler idempotencyHandler =
             IdempotencyHandlerFactory.createHandlerAnnotationBased(transactional);
 
-        return ObjectifyService.ofy().execute(transactional.type(), new Work() {
-          @Override
-          public Object run() {
+        return ObjectifyService.ofy().execute(transactional.type(), () -> {
             if (idempotencyHandler.shouldTransactionProceed(proxy, method, args)) {
               Object result = invokeMethod(args, implementationMethod);
               idempotencyHandler.setReturn(result);
             }
             return idempotencyHandler.getReturn();
-          }
         });
 
       } else {
