@@ -7,7 +7,15 @@ A skeleton application for Google Cloud Endpoints in Java.
 - [App Engine][1]
 
 ## Language
-- [Java][2]
+- [Java 11][2]
+
+## Prerequisites
+- JDK 11
+- Maven 3.1.0 or higher
+
+To build without the frontend (node/npm/bower) step:
+
+    $ mvn clean verify -Dskip.installnodenpm -Dskip.npm -Dskip.bower
 
 ## APIs
 - [Google Cloud Endpoints][3]
