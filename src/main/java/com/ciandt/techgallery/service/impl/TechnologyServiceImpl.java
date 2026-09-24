@@ -28,11 +28,10 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import javax.xml.bind.DatatypeConverter;
 
 /**
  * Services for Technology Endpoint requests.
@@ -87,7 +86,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     if (technology.getImageContent() != null) {
       imageLink =
           storageDAO.insertImage(convertNameToId(technology.getName()), new ByteArrayInputStream(
-              DatatypeConverter.parseBase64Binary(technology.getImageContent())));
+              Base64.getMimeDecoder().decode(technology.getImageContent())));
     }
 
     fillTechnology(technology, user, imageLink, isUpdate);
