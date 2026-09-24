@@ -23,7 +23,7 @@ fired: no new service, data store, vendor, integration, auth or network change.
 
 We will build and target Java 11 (`maven-compiler-plugin 3.8.1`, `<release>11</release>`),
 replace discontinued/incompatible build-time libraries (`mockito-all` -> `mockito-core 4.11.0`,
-JUnit 4.13.2, Jackson 2.13.5, commons-io 2.7, surefire 2.22.2, war plugin 3.3.2,
+JUnit 4.13.2, Jackson 2.18.11, commons-io 2.7, surefire 2.22.2, war plugin 3.3.2,
 frontend-maven-plugin 1.12.1) and replace the removed `javax.xml.bind.DatatypeConverter` with
 `java.util.Base64`. The App Engine SDK version (1.9.27), Objectify, the Google API clients and the
 deployment model stay unchanged; no `module-info.java` is introduced.
